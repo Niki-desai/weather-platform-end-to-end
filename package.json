@@ -1,0 +1,32 @@
+{
+  "name": "weather-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:api-gateway": "ts-node apps/api-gateway/src/server.ts",
+    "start:worker-service": "ts-node apps/worker-service/src/worker.ts",
+    "start:kafka-consumer": "ts-node apps/worker-service/src/kafka.consumer.ts",
+    "start:rabbit-consumer": "ts-node apps/worker-service/src/rabbit.consumer.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.9",
+    "axios": "^1.13.2",
+    "bullmq": "^5.66.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "ioredis": "^5.8.2",
+    "kafkajs": "^2.2.4",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

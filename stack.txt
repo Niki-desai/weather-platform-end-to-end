@@ -1,0 +1,8 @@
+- Node.js + TypeScript
+- Express
+- PostgreSQL
+- Redis
+- BullMQ
+- AWS: EC2, S3, RDS, ElastiCache
+- GCP: Cloud Run, GCS
+- Docker, Nginx, PM2
