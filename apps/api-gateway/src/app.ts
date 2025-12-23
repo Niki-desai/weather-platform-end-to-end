@@ -9,14 +9,18 @@ app.use(express.json());
 
 // Request logging middleware
 app.use((req, res, next) => {
+    console.log('========================================');
+    console.log('🚀 REQUEST RECEIVED!');
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     console.log('Headers:', req.headers);
     console.log('Query:', req.query);
     console.log('Body:', req.body);
+    console.log('========================================');
     next();
 });
 
-app.use(rateLimiter);
+// Temporarily disabled for debugging
+// app.use(rateLimiter);
 
 console.log('Registering /api/weather routes...');
 app.use('/api/weather', weatherRoutes);

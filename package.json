@@ -5,10 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:api-gateway": "ts-node apps/api-gateway/src/server.ts",
-    "start:worker-service": "ts-node apps/worker-service/src/worker.ts",
-    "start:kafka-consumer": "ts-node apps/worker-service/src/kafka.consumer.ts",
-    "start:rabbit-consumer": "ts-node apps/worker-service/src/rabbit.consumer.ts"
+    "build": "npm run build:api && npm run build:worker",
+    "build:api": "cd apps/api-gateway && npm run build",
+    "build:worker": "cd apps/worker-service && npm run build",
+    "pm2:start": "pm2 start ecosystem.config.js --env production",
+    "pm2:stop": "pm2 stop all",
+    "pm2:restart": "pm2 restart all",
+    "pm2:delete": "pm2 delete all",
+    "pm2:logs": "pm2 logs",
+    "pm2:status": "pm2 status",
+    "pm2:monit": "pm2 monit",
+    "deploy:setup": "bash deploy/setup-ec2.sh",
+    "deploy:app": "bash deploy/deploy.sh"
   },
   "keywords": [],
   "author": "",

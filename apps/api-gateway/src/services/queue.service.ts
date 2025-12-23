@@ -11,10 +11,17 @@ const redis = new Redis({
 const queue = new Queue('weather-jobs', { connection: redis });
 
 export async function publishJob(city: string, data: any) {
+    console.log("📋 Publishing job for city:", city);
+    console.log("   Data size:", JSON.stringify(data).length, "bytes");
+
     try {
-        await queue.add('weather', { city, data });
-    } catch (e) {
-        console.error('BullMQ failed');
+        const job = await queue.add('weather', { city, data });
+        console.log("✅ BullMQ job published successfully!");
+        console.log("   Job ID:", job.id);
+        console.log("   Queue: weather-jobs");
+    } catch (e: any) {
+        console.error('❌ BullMQ failed:', e.message);
+        console.error('   Error details:', e);
     }
 
     try {

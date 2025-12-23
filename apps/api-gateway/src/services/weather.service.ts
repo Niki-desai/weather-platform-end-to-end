@@ -1,6 +1,7 @@
 import axios from 'axios';
-import Redis from 'ioredis';
-import { publishJob } from './queue.service';
+import { Redis } from 'ioredis';
+import { publishJob } from './queue.service.js';
+// import { publishJob } from './queue.service';
 
 const redis = new Redis({
     host: process.env.REDIS_HOST || 'localhost',
@@ -47,7 +48,7 @@ export async function fetchWeather(city: string) {
 
         // 4️⃣ Cache result
         await redis.set(cacheKey, JSON.stringify(weatherData), 'EX', 3600);
-
+        console.log("Next one")
         // 5️⃣ Async job
         await publishJob(city, weatherData);
 

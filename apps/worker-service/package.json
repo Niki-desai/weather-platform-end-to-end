@@ -8,7 +8,9 @@
     "dev": "tsx src/worker.ts",
     "rabbit": "tsx src/rabbit.consumer.ts",
     "kafka": "tsx src/kafka.consumer.ts",
-    "start": "npm-run-all --parallel dev rabbit kafka"
+    "start": "npm-run-all --parallel dev rabbit kafka",
+    "build": "tsc",
+    "prod": "node dist/worker.js"
   },
   "keywords": [],
   "author": "",

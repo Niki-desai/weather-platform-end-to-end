@@ -1,0 +1,131 @@
+# AWS EC2 Deployment with PM2
+
+Deploying the weather platform to AWS EC2 with PM2 for process management, using AWS managed services for infrastructure.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Infrastructure Costs**: This deployment will use AWS managed services (RDS, ElastiCache, MSK) which incur costs. Estimated monthly cost: $150-300 depending on instance sizes.
+
+> [!WARNING]
+> **Security**: The deployment scripts will set up security groups. Review and adjust CIDR blocks for your specific requirements before deploying.
+
+## Proposed Changes
+
+### Infrastructure & Configuration
+
+#### [NEW] [deploy/](file:///c:/Users/nikit/Downloads/Personal/weather-platform/deploy/)
+
+Deployment scripts and configuration directory.
+
+**Files to create:**
+- `setup-ec2.sh` - EC2 instance setup script (Node.js, PM2, Nginx)
+- `deploy.sh` - Application deployment script
+- `.env.production` - Production environment variables template
+- `nginx.conf` - Nginx configuration for reverse proxy
+
+---
+
+### PM2 Configuration
+
+#### [MODIFY] [ecosystem.config.js](file:///c:/Users/nikit/Downloads/Personal/weather-platform/ecosystem.config.js)
+
+Expand PM2 configuration to include both API Gateway and Worker Service with proper environment handling.
+
+**Changes:**
+- Add worker-service configuration
+- Add environment-specific configs (dev, production)
+- Configure log rotation
+- Set up cluster mode for API Gateway
+- Add watch mode for development
+
+---
+
+### Build & Deployment
+
+#### [NEW] [package.json](file:///c:/Users/nikit/Downloads/Personal/weather-platform/package.json) (root)
+
+Add root-level package.json with deployment scripts.
+
+**Scripts:**
+- `build` - Build both services
+- `deploy:setup` - Run EC2 setup
+- `deploy:app` - Deploy application
+- `pm2:start` - Start all services with PM2
+- `pm2:stop` - Stop all services
+- `pm2:logs` - View logs
+
+---
+
+### TypeScript Build Configuration
+
+#### [MODIFY] [apps/api-gateway/package.json](file:///c:/Users/nikit/Downloads/Personal/weather-platform/apps/api-gateway/package.json)
+
+Add build script to compile TypeScript to JavaScript for production.
+
+#### [MODIFY] [apps/worker-service/package.json](file:///c:/Users/nikit/Downloads/Personal/weather-platform/apps/worker-service/package.json)
+
+Add build script to compile TypeScript to JavaScript for production.
+
+---
+
+### Documentation
+
+#### [NEW] [DEPLOYMENT.md](file:///c:/Users/nikit/Downloads/Personal/weather-platform/DEPLOYMENT.md)
+
+Comprehensive deployment guide with:
+- AWS infrastructure setup steps
+- EC2 instance configuration
+- Security group configuration
+- RDS/ElastiCache/MSK setup
+- Application deployment process
+- Troubleshooting guide
+
+## Verification Plan
+
+### Automated Tests
+
+**Build Verification:**
+```bash
+# From project root
+npm run build
+# Verify dist/ folders created in both services
+ls apps/api-gateway/dist
+ls apps/worker-service/dist
+```
+
+### Manual Verification
+
+**Local PM2 Test (before deploying to AWS):**
+1. Build the applications: `npm run build`
+2. Start with PM2: `npm run pm2:start`
+3. Check PM2 status: `pm2 status`
+4. Test API: `curl http://localhost:3000/health`
+5. Test weather endpoint: `curl http://localhost:3000/api/weather/London`
+6. Check PM2 logs: `pm2 logs`
+7. Stop services: `npm run pm2:stop`
+
+**AWS Deployment Test:**
+1. Launch EC2 instance (t3.medium or larger)
+2. Run setup script: `bash deploy/setup-ec2.sh`
+3. Deploy application: `bash deploy/deploy.sh`
+4. Verify services running: `pm2 status`
+5. Test public API: `curl http://<EC2-PUBLIC-IP>/health`
+6. Test weather endpoint: `curl http://<EC2-PUBLIC-IP>/api/weather/Tokyo`
+7. Check S3 uploads in AWS Console
+8. Monitor PM2 logs: `pm2 logs`
+
+**Infrastructure Verification:**
+- RDS PostgreSQL connection working
+- ElastiCache Redis connection working
+- MSK Kafka connection working (optional)
+- S3 uploads successful
+- Nginx reverse proxy working
+- PM2 auto-restart on failure
+- PM2 startup on server reboot
+
+**Performance Check:**
+- API response time < 500ms
+- Worker processing jobs successfully
+- No memory leaks (monitor with `pm2 monit`)
+- CPU usage reasonable under load
